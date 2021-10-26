@@ -1,83 +1,72 @@
 #include "sort.h"
 
 /**
- * lomuto_part - lomuto partition algorithm.
- * @array: array of integers
- * @size: size of the array
- * @hi: last value
- * @lo: first value
- * Return: i + 1.
+ * partition - partitions the array
+ * @array: array to take in
+ * @start: start of array;
+ * @end: end of array
+ * @size: full size of array
+ * Return: position of pivot
  */
-int lomuto_part(int *array, int lo, int hi, size_t size)
+int partition(int *array, int start, int end, int size)
 {
-	int i;
+	int pivot = array[end];
+	int i = start, j, temp;
 
-	for (i = lo - 1, lo; lo <= hi - 1; lo++)
+	for (j = start; j < end; j++)
 	{
-		if (array[lo] < array[hi])
+		if (array[j] <= pivot)
 		{
-			i = i + 1;
-			if (i != lo)
+			if (i != j)
 			{
-				swap(&array[lo], &array[i]);
-				print_array((const int *)array, size);
+				temp = array[i];
+				array[i] = array[j];
+				array[j] = temp;
+				print_array(array, size);
 			}
+			i++;
 		}
 	}
-	if (array[i + 1] > array[hi])
+	if (i != end)
 	{
-		swap(&array[i + 1], &array[hi]);
-		print_array((const int *)array, size);
+		temp = array[i];
+		array[i] = array[end];
+		array[end] = temp;
+		print_array(array, size);
 	}
-	return (i + 1);
+	printf("return i=%d\n", i);
+	return (i);
 }
 
 /**
- * quick_sort_easy - recurtion algorithm.
- * @array: array of integers
- * @size: size of the array
- * @hi: last value
- * @lo: first value
- * Return: void
+ * quickSort - quick sorts with recursion
+ * @array: array to sort through
+ * @start: start of array or subarray
+ * @end: end of array or subarray
+ * @size: size of full array
  */
-void quick_sort_easy(int *array, int lo, int hi, size_t size)
+void quickSort(int *array, int start, int end, int size)
 {
-	int pi;
+	int pivot;
 
-	if (lo < hi)
+	if (start < end)
 	{
-		pi = lomuto_part(array, lo, hi, size);
-		quick_sort_easy(array, lo, pi - 1, size);
-		quick_sort_easy(array, pi + 1, hi, size);
+		pivot = partition(array, start, end, size);
+		printf("first recursive, start [%d] to pivot-1[%d]\n", start, pivot - 1);
+		quickSort(array, start, pivot - 1, size);
+		printf("second recursive, pivot+1 [%d] to end [%d]\n", pivot + 1, end);
+		quickSort(array, pivot + 1, end, size);
 	}
 }
 
 /**
- * quick_sort - Quick sort algorithm.
- * @array: array of integers
- * @size: size of the array
- * Return: void
+ * quick_sort - quick sorts an array
+ * @array: array to sort
+ * @size: size of array
  */
 void quick_sort(int *array, size_t size)
 {
-	size_t lo, hi;
-
-	hi = size - 1;
-	lo = 0;
-	quick_sort_easy(array, lo, hi, size);
-}
-
-/**
- * swap - swap function.
- * @a: pointer to array in position a
- * @b: pointer to array in position b
- * Return: void
- */
-void swap(int *a, int *b)
-{
-	int tmp;
-
-	tmp = *a;
-	*a = *b;
-	*b = tmp;
+	if (array == NULL || size < 2)
+		return;
+	quickSort(array, 0, size - 1, size);
 }
